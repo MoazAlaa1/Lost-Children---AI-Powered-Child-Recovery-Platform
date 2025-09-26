@@ -1,0 +1,257 @@
+﻿@model List<VwHistoryDetails>
+@section Styles
+{
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --danger: #ef233c;
+            --danger-dark: #d90429;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f8fafc;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.75rem 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(67, 97, 238, 0.92), rgba(67, 97, 238, 0.92)), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-bottom: 2rem;
+            margin-top: 65px;
+        }
+
+        .profile-container {
+            margin-top: -51px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .badge-missing {
+            background-color: var(--danger);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+        }
+
+        .badge-priority {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .child-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+            .child-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            }
+
+        .child-img {
+            height: 250px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .missing-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .child-age {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .last-seen {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .view-btn {
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .view-btn:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+            }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: var(--primary-color);
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="mb-2">@Model[0].LostChildrenName</h1>
+        <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+            <span class="badge-missing">
+                <i class="fas fa-exclamation-triangle me-1"></i>MISSING
+            </span>
+
+        </div>
+    </div>
+</section>
+
+<!-- Profile Section -->
+<div class="container profile-container">
+    <div class="text-center">
+        <img src="@Model[0].LostChildrenImage"
+             class="profile-img mb-3" alt="@Model[0].LostChildrenName">
+        <div class="d-flex justify-content-center gap-2">
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3 class="fw-bold">Top <span class="text-primary">@Model.Count</span> Children Similarity: </h3>
+            </div>
+        </div>
+
+        <div class="row g-4" id="childrenContainer">
+            @if (Model.Count > 0 && Model != null)
+            {
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <!-- Child Card  -->
+                    <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp">
+                        <div class="child-card">
+                            <div class="position-relative">
+                                <img src="@Model[i].FoundChildImage"
+                                     class="child-img" alt="Missing child">
+                                <div class="missing-badge">Existed</div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@(Model[i].FoundChildName??"Unknown")</h5>
+                                <p class="card-text">
+                                    <span class="child-age">@Model[i].EstimatedAge years old</span>
+                                </p>
+                                @if (Model[i].FoundDate != null && Model[i].FoundLocation != "")
+                                {
+                                    <p class="last-seen">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Found in @Model[i].FoundLocation, on @(Model[i].FoundDate.ToString("D") ?? "")
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-controller="Search" asp-action="ChildDetails" asp-route-id="@Model[i].FoundChildId" class="view-btn btn btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+
+        </div>
+
+       
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>

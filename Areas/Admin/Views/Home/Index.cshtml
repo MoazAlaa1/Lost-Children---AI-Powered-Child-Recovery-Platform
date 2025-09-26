@@ -1,0 +1,111 @@
+﻿@model DashboardResult
+@section Styles{
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="~/Admin/assets/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <!-- End plugin css for this page -->
+} 
+
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-home"></i>
+                </span> Dashboard
+            </h3> 
+            
+        </div>
+        <div class="row">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-danger card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/Admin/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                            FoundChildren <i class="mdi mdi-chart-line mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5">@Model.Statistics.FoundChildren</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-info card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/Admin/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                            LostChildren <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5">@Model.Statistics.LostChildren</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-success card-img-holder text-white">
+                    <div class="card-body">
+                        <img src="~/Admin/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">
+                            Users <i class="mdi mdi-diamond mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5">@Model.Statistics.Users</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Recent FoundChildren</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th> Child </th>
+                                        <th> EstimatedAge </th>
+                                        <th> Gender </th>
+                                        <th> CurrentCondition </th>
+                                        <th> FoundDate </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.RecentFoundChildren.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@Model.RecentFoundChildren[i].FoundChildImage" style="width:65px;height:65px; padding:5px;" class="" alt="image"> <span>@Model.RecentFoundChildren[i].FoundChildName</span>
+                                        </td>
+                                        <td> @Model.RecentFoundChildren[i].EstimatedAge </td>
+                                        <td> @Model.RecentFoundChildren[i].Gender </td>
+                                        @if (@Model.RecentFoundChildren[i].CurrentCondition=="good")
+                                        {
+                                            <td>
+                                                <label class="badge badge-gradient-success">@Model.RecentFoundChildren[i].CurrentCondition</label>
+                                            </td>
+                                        }
+                                        else if (@Model.RecentFoundChildren[i].CurrentCondition=="fair")
+                                        {
+                                            <td> 
+                                                <label class="badge badge-gradient-info">@Model.RecentFoundChildren[i].CurrentCondition</label>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <label class="badge badge-gradient-danger">@Model.RecentFoundChildren[i].CurrentCondition</label>
+                                            </td>
+                                        }
+
+                                        <td> @Model.RecentFoundChildren[i].FoundDate.ToString("D") </td>
+                                    </tr>
+                                }
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <!-- content-wrapper ends -->

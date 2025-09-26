@@ -1,0 +1,430 @@
+﻿@model LostChild
+@section Styles{
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7ff;
+            color: #444;
+        }
+
+        .navbar {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .search-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .search-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.25);
+            }
+
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-upload-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1.5rem;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .file-upload-label:hover {
+                border-color: var(--accent-color);
+                background-color: rgba(76, 201, 240, 0.05);
+            }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-search:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+            }
+
+        .privacy-note {
+            background-color: rgba(76, 201, 240, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .results-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .match-card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+            .match-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            }
+
+        .match-percentage {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #343a40);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 5rem;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0%{
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+
+        }
+    </style>
+}
+
+ <!-- Hero Section -->
+<section class="search-hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Search for a Lost Child</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Our AI-powered system helps you find missing children faster</p>
+        <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+            <a href="#search-form" class="btn btn-light btn-lg px-4">
+                <i class="fas fa-search me-2"></i>Begin Search
+            </a>
+            <a asp-controller="Report" asp-action="ReportForm" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-flag me-2"></i>Report Found Child
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Search Form -->
+<section id="search-form" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="search-card mb-5 animate__animated animate__fadeIn">
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="fas fa-search me-2"></i>Search Details</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="searchChildForm" asp-controller="Search" asp-action="Result" method="post"
+                        enctype="multipart/form-data" role="form">
+                            <!-- Child Photo -->
+                            <div class="mb-4">
+                                <label class="form-label">Child's Photo</label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="searchChildPhoto" class="file-upload-input" accept="image/*" required name="File">
+                                    <label for="searchChildPhoto" class="file-upload-label">
+                                        <div class="file-upload-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                        <h5>Upload a Photo</h5>
+                                        <p class="text-muted">Clear frontal photo works best for matching</p>
+                                        <small class="text-muted">Maximum file size: 5MB</small>
+                                    </label>
+                                    <img id="searchPhotoPreview" class="photo-preview img-thumbnail" alt="Preview">
+                                    <button type="button" id="removeSearchPhotoBtn" class="btn btn-sm btn-outline-danger mt-2 d-none">
+                                        <i class="fas fa-times me-1"></i>Remove Photo
+                                    </button>
+                                </div>
+                                <span class="text-danger" asp-validation-for="LostChildrenImage" class="text-danger"></span>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Child's Name -->
+                                <div class="col-md-6">
+                                    <label for="childName" class="form-label">Child's Name</label>
+                                    <input type="text" class="form-control" id="childName" placeholder="First and last name" asp-for="LostChildrenName">
+                                    <span class="text-danger" asp-validation-for="LostChildrenName" class="text-danger"></span>
+                                </div>
+
+                                <!-- Child's Age -->
+                                <div class="col-md-6">
+                                    <label for="childAge" class="form-label">Child's Age</label>
+                                    <input type="number" class="form-control" id="childAge" min="1" max="18" required asp-for="AgeOfPhoto">
+                                    <span class="text-danger" asp-validation-for="AgeOfPhoto" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Date of Birth-->
+                                <div class="col-md-6">
+                                    <label for="DateOfBirth" class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="DateOfBirth" required  asp-for="DateOfBirth">
+                                    <span class="text-danger" asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <!-- Gender-->
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" required asp-for="Gender">
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <!-- Last Seen Location -->
+                            <div class="mb-4 mt-3">
+                                <label for="lastSeen" class="form-label">Last Seen Location</label>
+                                <input type="text" class="form-control" id="lastSeen" required asp-for="LastSeenLocation"
+                                       placeholder="City, state/province, and country">
+                                <span class="text-danger" asp-validation-for="LastSeenLocation" class="text-danger"></span>
+                            </div>
+
+                            <!-- Last Seen Date -->
+                            <div class="mb-4">
+                                <label for="lastSeenDate" class="form-label">Last Seen Date</label>
+                                <input type="date" class="form-control" id="lastSeenDate" required asp-for="LastSeenDate" >
+                                <span class="text-danger" asp-validation-for="LastSeenDate" class="text-danger"></span>
+                            </div>
+
+                            <!-- Physical Description -->
+                            <div class="mb-4">
+                                <label for="physicalDescription" class="form-label">Physical Description</label>
+                                <textarea class="form-control" id="physicalDescription" rows="3" asp-for="PhysicalDescription"
+                                          placeholder="Height, hair color, eye color, distinguishing features, clothing description, etc."></textarea>
+                                <span class="text-danger" asp-validation-for="PhysicalDescription" class="text-danger"></span>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="mb-4">
+                                <label for="additionalInfo" class="form-label">Additional Information</label>
+                                <textarea class="form-control" id="additionalInfo" rows="2" asp-for="AdditionalInformation"
+                                          placeholder="Any other details that might help in the search"></textarea>
+                                <span class="text-danger" asp-validation-for="AdditionalInformation" class="text-danger"></span>
+                            </div>
+
+                            <!-- Your Information -->
+                            <h4 class="mt-5 mb-3"><i class="fas fa-user-circle me-2"></i>Your Information</h4>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="searcherName" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="searcherName" required asp-for="SearcherName" >
+                                    <span class="text-danger" asp-validation-for="SearcherName" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="searcherRelationship" class="form-label">Your Relationship</label>
+                                    <select class="form-select" id="searcherRelationship" required asp-for="SearcherRelationship" >
+                                        <option value="" selected disabled>Select relationship</option>
+                                        <option value="parent">Parent</option>
+                                        <option value="relative">Relative</option>
+                                        <option value="friend">Family Friend</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="SearcherRelationship" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 mt-3">
+                                <label for="searcherContact" class="form-label">Your Phone Number</label>
+                                <input type="text" class="form-control" id="searcherContact" required asp-for="SearcherPhone"
+                                       placeholder="Phone number where you can be reached">
+                                <span class="text-danger" asp-validation-for="SearcherPhone" class="text-danger"></span>
+                            </div>
+                            <div class="mb-4 mt-3">
+                                <label for="Email" class="form-label">Your Email (Optional)</label>
+                                <input type="text" class="form-control" id="Email" asp-for="SearcherEmail"
+                                       placeholder="Email where you can be reached">
+                                <span class="text-danger" asp-validation-for="SearcherEmail" class="text-danger"></span>
+                            </div>
+
+                            <!-- Privacy Notice -->
+                            <div class="privacy-note">
+                                <h5><i class="fas fa-shield-alt me-2"></i>Privacy Notice</h5>
+                                <p class="mb-0">All information provided will be kept confidential and only used for the purpose of finding the missing child. We comply with all applicable privacy laws.</p>
+                            </div>
+
+                            <!-- Consent Checkbox -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="consentCheck" required>
+                                <label class="form-check-label" for="consentCheck">
+                                    I confirm that I have the legal authority to share this information and consent to its processing for the purpose of finding the missing child.
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-search btn-lg">
+                                    <i class="fas fa-search me-2"></i>Search Now
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        // Photo upload preview
+        document.getElementById('searchChildPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('searchPhotoPreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('removeSearchPhotoBtn').classList.remove('d-none');
+
+                    // Update upload label
+                    const label = document.querySelector('label[for="searchChildPhoto"]');
+                    label.innerHTML = `
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h5 class="text-success">Photo Uploaded</h5>
+                        <small class="text-muted">${file.name}</small>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove photo
+        document.getElementById('removeSearchPhotoBtn').addEventListener('click', function() {
+            document.getElementById('searchChildPhoto').value = '';
+            document.getElementById('searchPhotoPreview').style.display = 'none';
+            this.classList.add('d-none');
+
+            // Reset upload label
+            document.querySelector('label[for="searchChildPhoto"]').innerHTML = `
+                <div class="file-upload-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h5>Upload a Photo</h5>
+                <p class="text-muted">Clear frontal photo works best for matching</p>
+                <small class="text-muted">Maximum file size: 5MB</small>
+            `;
+        });
+
+       
+
+        // Animate form on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const formCard = document.querySelector('.search-card');
+            formCard.classList.add('animate__animated', 'animate__fadeInUp');
+        });
+    </script>
+}

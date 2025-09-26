@@ -1,0 +1,93 @@
+﻿@section Styles{
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .thank-you-container {
+            max-width: 800px;
+            margin: 5rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #28a745;
+            border-radius: 50%;
+            color: white;
+            font-size: 50px;
+        }
+
+        .btn-continue {
+            background-color: #28a745;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+            .btn-continue:hover {
+                background-color: #218838;
+                transform: translateY(-2px);
+            }
+
+        .details-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        @@media (max-width: 768px) {
+            .thank-you-container
+
+        {
+            margin: 2rem auto;
+            padding: 1.5rem;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            font-size: 40px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        }
+    </style>
+}
+<div class="container">
+    <div class="thank-you-container">
+        <div class="checkmark">
+            ✓
+        </div>
+        <h1 class="mb-3">Done!</h1>
+        <p class="lead">Your submission has been received successfully.</p>
+
+
+        <div class="mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-continue btn-lg">
+                Return to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}

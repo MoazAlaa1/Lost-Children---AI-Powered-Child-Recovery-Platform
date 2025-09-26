@@ -1,0 +1,498 @@
+﻿@model FoundChild
+@section Styles{
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #4bb543;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7ff;
+            color: #444;
+        }
+
+        .navbar {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .report-hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .report-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .report-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--success-color), #3a9e3a);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.25);
+            }
+
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-upload-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1.5rem;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .file-upload-label:hover {
+                border-color: var(--accent-color);
+                background-color: rgba(76, 201, 240, 0.05);
+            }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--success-color), #3a9e3a);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(75, 181, 67, 0.4);
+            }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+            .step-indicator::before {
+                content: '';
+                position: absolute;
+                top: 15px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background-color: #eee;
+                z-index: 1;
+            }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step.active .step-number {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .privacy-note {
+            background-color: rgba(76, 201, 240, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #343a40);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 5rem;
+        }
+    </style>
+}
+<!-- Hero Section -->
+<section class="report-hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Report a Found Child</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Help reunite a child with their family by providing information</p>
+        <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+            <a href="#report-form" class="btn btn-light btn-lg px-4">
+                <i class="fas fa-pencil-alt me-2"></i>Start Report
+            </a>
+            <a asp-controller="Search" asp-action="SearchForm" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-search me-2"></i>Search Instead
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Report Form -->
+<section id="report-form" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="report-card mb-5 animate__animated animate__fadeIn">
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="fas fa-flag me-2"></i>Found Child Information</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Step Indicator -->
+                        <div class="step-indicator">
+                            <div class="step active">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Child Details</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Location</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Your Info</div>
+                            </div>
+                        </div>
+
+                        <form id="foundChildForm"  asp-controller="Report" asp-action="ReportResult"
+                            enctype="multipart/form-data" role="form">
+                            <!-- Child Photo -->
+                            <div class="mb-4">
+                                <label class="form-label">Child's Photo</label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="childPhoto" class="file-upload-input" name="File" accept="image/*" required>
+                                    <label for="childPhoto" class="file-upload-label">
+                                        <div class="file-upload-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                        <h5>Upload a Photo</h5>
+                                        <p class="text-muted">Drag & drop a photo here or click to browse</p>
+                                        <small class="text-muted">Maximum file size: 5MB</small>
+                                    </label>
+                                    <img id="photoPreview" class="photo-preview img-thumbnail" alt="Preview">
+                                    <button type="button" id="removePhotoBtn" class="btn btn-sm btn-outline-danger mt-2 d-none">
+                                        <i class="fas fa-times me-1"></i>Remove Photo
+                                    </button>
+                                </div>
+                                <span class="text-danger" asp-validation-for="FoundChildId" class="text-danger"></span>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Estimated Age -->
+                                <div class="col-md-6">
+                                    <label for="estimatedAge" class="form-label">Estimated Age</label>
+                                    <input type="number" class="form-control" id="estimatedAge" min="1" max="30" step="1"  required asp-for="EstimatedAge">
+                                    <span class="text-danger" asp-validation-for="EstimatedAge" class="text-danger"></span>
+                                </div>
+
+                                <!-- Gender -->
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" required asp-for="Gender">
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!-- Name -->
+                            <div class="mb-4 mt-3">
+                                <label for="ChildName" class="form-label">Child's Name (Optional)</label>
+                                <input type="text" class="form-control" id="childName" placeholder="First and last name" asp-for="FoundChildName">
+                                <span class="text-danger" asp-validation-for="FoundChildName" class="text-danger"></span>
+                            </div>
+                            <!-- Physical Description -->
+                            <div class="mb-4 mt-3">
+                                <label for="physicalDescription" class="form-label">Physical Description </label>
+                                <textarea class="form-control" id="physicalDescription" rows="3" asp-for="physicalDescription"
+                                          placeholder="Height, hair color, eye color, distinguishing features, clothing, etc."></textarea>
+                                <span class="text-danger" asp-validation-for="physicalDescription" class="text-danger"></span>
+                            </div>
+
+                            <!-- Current Condition -->
+                            <div class="mb-4">
+                                <label for="condition" class="form-label">Current Condition</label>
+                                <select class="form-select" id="condition" required asp-for="CurrentCondition">
+                                    <option value="" selected disabled>Select condition</option>
+                                    <option value="good">Good - No visible injuries</option>
+                                    <option value="fair">Fair - Minor injuries</option>
+                                    <option value="serious">Serious - Needs medical attention</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="CurrentCondition" class="text-danger"></span>
+                            </div>
+
+                            <!-- Found Location -->
+                            <div class="mb-4">
+                                <label for="foundLocation" class="form-label">Location Where Found</label>
+                                <input type="text" class="form-control" id="foundLocation" required asp-for="FoundLocation"
+                                       placeholder="Street address, city, and state/province">
+                                <span class="text-danger" asp-validation-for="FoundLocation" class="text-danger"></span>
+                            </div>
+
+                            <!-- Found Date/Time -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="foundDate" class="form-label">Date Found</label>
+                                    <input type="date" class="form-control" id="foundDate" max="@DateTime.Now" required asp-for="FoundDate">
+                                    <span class="text-danger" asp-validation-for="FoundDate" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="foundTime" class="form-label">Approximate Time</label>
+                                    <input type="time" class="form-control" id="foundTime"  asp-for="ApproximateTime">
+                                    <span class="text-danger" asp-validation-for="ApproximateTime" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Current Location -->
+                            <div class="mb-4 mt-3">
+                                <label for="currentLocation" class="form-label">Current Location of Child</label>
+                                <select class="form-select" id="currentLocation" required asp-for="CurrentLocation">
+                                    <option value="" selected disabled>Select current location</option>
+                                    <option value="with_me">With me</option>
+                                    <option value="police">With local police</option>
+                                    <option value="hospital">At a hospital</option>
+                                    <option value="shelter">At a shelter</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Additional Notes -->
+                            <div class="mb-4">
+                                <label for="additionalNotes" class="form-label">Additional Notes</label>
+                                <textarea class="form-control" id="additionalNotes" rows="2" asp-for="AdditionalNotes"
+                                          placeholder="Any other information that might help identify the child or their family"></textarea>
+                            </div>
+
+                            <!-- Your Information -->
+                            <h4 class="mt-5 mb-3"><i class="fas fa-user-circle me-2"></i>Your Information</h4>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="reporterName" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="reporterName" required asp-for="ReporterName">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="reporterRelationship" class="form-label">Your Relationship to Child</label>
+                                    <select class="form-select" id="reporterRelationship" required asp-for="ReporterRelationShip">
+                                        <option value="" selected disabled>Select relationship</option>
+                                        <option value="stranger">Stranger</option>
+                                        <option value="authority">Police/Authority</option>
+                                        <option value="medical">Medical Professional</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 mt-3">
+                                <label for="searcherContact" class="form-label">Your Phone Number</label>
+                                <input type="text" class="form-control" id="searcherContact" required asp-for="ReporterPhone"
+                                       placeholder="Phone number where you can be reached">
+                            </div>
+                            <div class="mb-4 mt-3">
+                                <label for="Email" class="form-label">Your Email (Optional)</label>
+                                <input type="text" class="form-control" id="Email" asp-for="ReporterEmail"
+                                       placeholder="Email where you can be reached">
+                            </div>
+
+                            <!-- Privacy Notice -->
+                            <div class="privacy-note">
+                                <h5><i class="fas fa-shield-alt me-2"></i>Privacy Notice</h5>
+                                <p class="mb-0">All information provided will be kept confidential and only used for the purpose of reuniting this child with their family. We comply with all applicable privacy laws.</p>
+                            </div>
+
+                            <!-- Consent Checkbox -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="consentCheck" required>
+                                <label class="form-check-label" for="consentCheck">
+                                    I confirm that I'm reporting accurate information and consent to its processing for the purpose of reuniting this child with their family.
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-submit btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Report
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-muted">Looking for a missing child instead? <a asp-controller="Search" asp-action="SearchForm">Search our database</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-5 text-center">
+                <div class="mb-4">
+                    <div class="icon-circle bg-success mb-3 mx-auto">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <h3 class="mb-3">Report Submitted Successfully!</h3>
+                    <p>Thank you for helping reunite this child with their family. Our system will analyze the information and notify potential matches.</p>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        // Photo upload preview
+        document.getElementById('childPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('removePhotoBtn').classList.remove('d-none');
+
+                    // Update upload label
+                    const label = document.querySelector('.file-upload-label');
+                    label.innerHTML = `
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h5 class="text-success">Photo Uploaded</h5>
+                        <small class="text-muted">${file.name}</small>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove photo
+        document.getElementById('removePhotoBtn').addEventListener('click', function() {
+            document.getElementById('childPhoto').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            this.classList.add('d-none');
+
+            // Reset upload label
+            document.querySelector('.file-upload-label').innerHTML = `
+                <div class="file-upload-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h5>Upload a Photo</h5>
+                <p class="text-muted">Drag & drop a photo here or click to browse</p>
+                <small class="text-muted">Maximum file size: 5MB</small>
+            `;
+        });
+
+        // Form submission
+        // document.getElementById('foundChildForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+
+        //     In a real app, this would send data to your backend
+        //     For demo, we'll show the confirmation modal
+        //     const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        //     modal.show();
+        // });
+
+        // Emergency button
+        // document.getElementById('emergencyBtn').addEventListener('click', function() {
+        //     alert('In a real application, this would connect you with emergency services in your area.');
+        // });
+
+        // Animate form on load
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const formCard = document.querySelector('.report-card');
+        //     formCard.classList.add('animate__animated', 'animate__fadeInUp');
+        // });
+    </script>
+}

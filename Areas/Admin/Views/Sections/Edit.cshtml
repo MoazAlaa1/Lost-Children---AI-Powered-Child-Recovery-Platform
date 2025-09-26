@@ -1,0 +1,179 @@
+﻿@model AboutSections
+@section Styles
+{
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="~/Admin/assets/vendors/quill/quill.snow.css">
+    <link rel="stylesheet" href="~/Admin/assets/vendors/simplemde/simplemde.min.css">
+    <!-- End plugin css for this page -->
+    <style>
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-upload-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1.5rem;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .file-upload-label:hover {
+                border-color: var(--accent-color);
+                background-color: rgba(76, 201, 240, 0.05);
+            }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+}
+<div class="content-wrapper">
+    <form class="forms-sample" method="post" enctype="multipart/form-data"
+      asp-area="Admin" asp-controller="Sections" asp-action="Save" role="form">
+    <div class="row" style="padding: 50px;">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body row">
+                    <h4 class="card-title">Section Form</h4>
+                    <p class="card-description"> New or Edit </p>
+                          <input type="hidden" asp-for="SectionId"/>
+                          <input type="hidden" asp-for="CreatedBy"/>
+                          <input type="hidden" asp-for="UpdatedBy"/>
+                          <input type="hidden" asp-for="UpdatedDate"/>
+                          <input type="hidden" asp-for="SectionImage"/>
+                    <div class="form-group col-md-6">
+                        <label>Section Name</label>
+                        <input type="text" class="form-control" placeholder="Section Name" asp-for="SectionName" required maxlength="50">
+                        <span class="text-danger"  asp-validation-for="SectionTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                    <label>Section Title</label>
+                        <input type="text" class="form-control" asp-for="SectionTitle" placeholder="Section Title" required />
+                        <span class="text-danger"  asp-validation-for="SectionTitle"></span>
+                    </div>
+                    
+                    <div class="row grid-margin">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Section Description</h4>
+                                    <textarea id='tinyMceExample'asp-for="SectionDescription">Edit your content here...</textarea>
+                                    <span class="text-danger" asp-validation-for="SectionDescription"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  Photo -->
+                    <div class="mb-4">
+                        <label class="form-label">Photo</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="searchChildPhoto" class="file-upload-input" accept="image/*" name="File">
+                            <label for="searchChildPhoto" class="file-upload-label">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <h5>Upload a Photo</h5>
+                                <p class="text-muted">Clear frontal photo works best for matching</p>
+                                <small class="text-muted">Maximum file size: 5MB</small>
+                            </label>
+                            <img id="searchPhotoPreview" class="photo-preview img-thumbnail" alt="Preview" src="@Model.SectionImage">
+                            <button type="button" id="removeSearchPhotoBtn" class="btn btn-sm btn-outline-danger mt-2 d-none">
+                                <i class="fas fa-times me-1"></i>Remove Photo
+                            </button>
+                        </div>
+                        <span class="text-danger" asp-validation-for="SectionImage"></span>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                        <a class="btn btn-light" asp-controller="Sections" asp-action="List" asp-area="Admin">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Admin/assets/vendors/tinymce/tinymce.min.js"></script>
+    <!-- Custom js for this page -->
+    <script src="~/Admin/assets//js/editorDemo.js"></script>
+    <!-- End custom js for this page -->
+    <script>
+        const preview = document.getElementById('searchPhotoPreview');
+            if(preview.src != "")
+            {
+                preview.style.display = 'block';
+            }
+
+        // Photo upload preview
+        document.getElementById('searchChildPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('searchPhotoPreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('removeSearchPhotoBtn').classList.remove('d-none');
+
+                    // Update upload label
+                    const label = document.querySelector('label[for="searchChildPhoto"]');
+                    label.innerHTML = `
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h5 class="text-success">Photo Uploaded</h5>
+                        <small class="text-muted">${file.name}</small>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove photo
+        document.getElementById('removeSearchPhotoBtn').addEventListener('click', function() {
+            document.getElementById('searchChildPhoto').value = '';
+            document.getElementById('searchPhotoPreview').style.display = 'none';
+            this.classList.add('d-none');
+
+            // Reset upload label
+            document.querySelector('label[for="searchChildPhoto"]').innerHTML = `
+                <div class="file-upload-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h5>Upload a Photo</h5>
+                <p class="text-muted">Clear frontal photo works best for matching</p>
+                <small class="text-muted">Maximum file size: 5MB</small>
+            `;
+        });
+
+
+    </script>
+}

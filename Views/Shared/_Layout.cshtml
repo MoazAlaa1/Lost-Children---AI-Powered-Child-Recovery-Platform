@@ -1,0 +1,191 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LostChildren - Reuniting Families with AI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/style.css">
+   @RenderSection("Styles",false)
+</head>
+<body>
+
+    <!-- Header/Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-child-reaching me-2"></i>LostChildren
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "SearchForm" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Search" ? "active" : "")" asp-controller="Search" asp-action="SearchForm">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ReportForm" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Report" ? "active" : "") " asp-controller="Report" asp-action="ReportForm">Report</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "LostChildren" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="LostChildren">Missing Children</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "About" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["Controller"]?.ToString() == "User" || ViewContext.RouteData.Values["Controller"]?.ToString() == "History" ? "active" : "")" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            My Account
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li><a class="dropdown-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "LogOut" ? "active" : "")" asp-controller="User" asp-action="LogOut">LogOut</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "History" ? "active" : "")" asp-controller="History" asp-action="Index">My History</a></li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "LoginForm" ? "active" : "")" asp-controller="User" asp-action="LoginForm">Login</a></li>
+                            }
+                            
+                            
+                        </ul>
+                    </li>
+                   
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-4">
+                        <i class="fas fa-child-reaching me-2"></i>LostChildren
+                    </h4>
+                    <p>Using AI to reunite families and bring lost children home.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html">Home</a></li>
+                        <li class="mb-2"><a href="search.html">Search</a></li>
+                        <li class="mb-2"><a href="report.html">Report</a></li>
+                        <li class="mb-2"><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="mb-4">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5 class="mb-4">Contact Info</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-2"></i>  cairo <br>
+                            <span style="padding-left: 24px;">Giza , 18 Street</span>
+                        </li>
+                        <li class="mb-3"><i class="fas fa-phone me-2"></i> +20 123-456-78</li>
+                        <li class="mb-3"><i class="fas fa-envelope me-2"></i> contact@LostChildren.org</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0">&copy; 2025 LostChildren. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Made with <i class="fas fa-heart text-danger"></i> for families worldwide</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @* <script> *@
+    @*     // Navigation active state management *@
+    @*     document.addEventListener('DOMContentLoaded', function() { *@
+    @*         // Get current URL path *@
+    @*         const currentPath = window.location.pathname.toLowerCase(); *@
+
+    @*         // Remove active class from all nav links *@
+    @*         document.querySelectorAll('.navbar-nav .nav-link').forEach(link => { *@
+    @*             link.classList.remove('active'); *@
+    @*         }); *@
+
+    @*         // Find and activate the current page's nav link *@
+    @*         let foundActive = false; *@
+
+    @*         // Check regular nav links first *@
+    @*         document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)').forEach(link => { *@
+    @*             const href = link.getAttribute('href'); *@
+    @*             if (href) { *@
+    @*                 const linkPath = href.toLowerCase(); *@
+    @*                 // Check if current path starts with the link path (for nested routes) *@
+    @*                 if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) { *@
+    @*                     link.classList.add('active'); *@
+    @*                     foundActive = true; *@
+    @*                 } *@
+    @*             } *@
+    @*         }); *@
+
+    @*         // If no regular link found, check dropdown items *@
+    @*         if (!foundActive) { *@
+    @*             document.querySelectorAll('.dropdown-item').forEach(link => { *@
+    @*                 const href = link.getAttribute('href'); *@
+    @*                 if (href) { *@
+    @*                     const linkPath = href.toLowerCase(); *@
+    @*                     if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) { *@
+    @*                         // Activate the dropdown parent *@
+    @*                         const dropdownToggle = document.querySelector('.nav-link.dropdown-toggle'); *@
+    @*                         if (dropdownToggle) { *@
+    @*                             dropdownToggle.classList.add('active'); *@
+    @*                         } *@
+    @*                         foundActive = true; *@
+    @*                     } *@
+    @*                 } *@
+    @*             }); *@
+    @*         } *@
+
+    @*         // Special case for home page (root path) *@
+    @*         if (currentPath === '/' || currentPath === '/Home/Index') { *@
+    @*             document.querySelector('.navbar-nav .nav-link[href="/"]')?.classList.add('active'); *@
+    @*             document.querySelector('.navbar-nav .nav-link[href="/Home/Index"]')?.classList.add('active'); *@
+    @*         } *@
+    @*     }); *@
+    @* </script> *@
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+
+    @RenderSection("Scripts",false)
+
+</body>
+</html>

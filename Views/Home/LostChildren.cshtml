@@ -1,0 +1,584 @@
+﻿@model List<LostChild>
+@section Styles{
+    <style>
+        :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4cc9f0;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --danger-color: #ef233c;
+        }
+
+        body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f5f7ff;
+        color: #444;
+        }
+
+        .navbar {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+        background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 5rem 0;
+        margin-bottom: 3rem;
+        }
+
+        .search-container {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 2rem;
+        margin-top: -50px;
+        position: relative;
+        z-index: 10;
+        }
+
+        .filter-btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        }
+
+        .child-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        }
+
+        .child-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .child-img {
+        height: 250px;
+        object-fit: cover;
+        width: 100%;
+        }
+
+        .missing-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: var(--danger-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        }
+
+        .child-age {
+        font-weight: 600;
+        color: var(--primary-color);
+        }
+
+        .last-seen {
+        font-size: 0.875rem;
+        color: #6c757d;
+        }
+
+        .view-btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-color: var(--primary-color);
+        }
+
+        .pagination .page-link {
+        color: var(--primary-color);
+        font-weight: 500;
+        }
+
+        .no-results {
+        text-align: center;
+        padding: 3rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .floating {
+        animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+        0%{
+        transform: translateY(0px);
+        }
+
+        50% {
+        transform: translateY(-10px);
+        }
+
+        100% {
+        transform: translateY(0px);
+        }
+
+        }
+
+        footer {
+        background: linear-gradient(135deg, var(--dark-color), #343a40);
+        color: white;
+        padding: 3rem 0 1rem;
+        margin-top: 5rem;
+        }
+    </style>
+}  
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Missing Children</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Help us bring these children home to their families</p>
+        <div class="animate__animated animate__fadeInUp animate__delay-1s">
+            <a asp-controller="Report" asp-action="ReportForm" class="btn btn-light btn-lg px-4 me-2">
+                <i class="fas fa-flag me-2"></i>Report Found Child
+            </a>
+            <a href="#search" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-search me-2"></i>Search Below
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filter Section -->
+<div class="container" id="search">
+    <div class="search-container animate__animated animate__fadeInUp">
+        <div class="row">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search by name, location, or description...">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+            <button class="filter-btn btn btn-outline-primary active">All</button>
+            <button class="filter-btn btn btn-outline-primary">Recently Missing</button>
+            <button class="filter-btn btn btn-outline-primary">Long Term</button>
+            <button class="filter-btn btn btn-outline-primary">Age 0-5</button>
+            <button class="filter-btn btn btn-outline-primary">Age 6-12</button>
+            <button class="filter-btn btn btn-outline-primary">Age 13-18</button>
+        </div>
+    </div>
+</div>
+
+<!-- Lost Children Gallery -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3 class="fw-bold">Currently Missing: <span class="text-primary">@Model.Count</span></h3>
+            </div>           
+        </div>
+
+        <div class="row g-4" id="childrenContainer">
+            @if(Model.Count > 0 && Model != null)
+            {
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <!-- Child Card  -->
+                    <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp">
+                        <div class="child-card">
+                            <div class="position-relative">
+                                <img src="@Model[i].LostChildrenImage"
+                                     class="child-img" alt="Missing child">
+                                <div class="missing-badge">MISSING</div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@Model[i].LostChildrenName</h5>
+                                <p class="card-text">
+                                    <span class="child-age"><span id="ChildAge">@Model[i].AgeOfPhoto</span> years old</span>
+                                </p>
+                                @if(Model[i].LastSeenDate != null && Model[i].LastSeenLocation !="")
+                                {
+                                    <p class="last-seen">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Last seen in @Model[i].LastSeenLocation, on @(Model[i].LastSeenDate?.ToString("D")??"")
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-controller="Home" asp-action="ChildDetails" asp-route-id="@Model[i].LostChildrenId" class="view-btn btn btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            
+
+            
+        </div>
+
+        <!-- No Results (hidden by default) -->
+        <div id="noResults" class="no-results animate__animated animate__fadeIn" style="display: none;">
+            <div class="icon-circle bg-light mb-4 mx-auto">
+                <i class="fas fa-search fa-3x text-primary"></i>
+            </div>
+            <h3 class="mb-3">No Results Found</h3>
+            <p class="mb-4">We couldn't find any matches for your search criteria. Please try different filters.</p>
+            <button id="resetFiltersBtn" class="btn btn-primary">
+                <i class="fas fa-redo me-2"></i>Reset Filters
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+                // Global variables for pagination
+        let currentPage = 1;
+        let itemsPerPage = 3; 
+
+        // Filter buttons functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentPage = 1; // Reset to first page when filter changes
+                applyAllFilters();
+            });
+        });
+
+        // Reset filters button
+        document.getElementById('resetFiltersBtn').addEventListener('click', function() {
+            // Reset all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.filter-btn').classList.add('active');
+
+            // Reset search input
+            document.querySelector('input[type="text"]').value = '';
+
+            currentPage = 1; // Reset to first page
+            applyAllFilters();
+        });
+
+        // Search functionality
+        document.querySelector('input[type="text"]').addEventListener('input', function() {
+            currentPage = 1; // Reset to first page when search changes
+            applyAllFilters();
+        });
+
+        // Search button functionality
+        document.querySelector('button.btn-primary').addEventListener('click', function() {
+            currentPage = 1; // Reset to first page when search button clicked
+            applyAllFilters();
+        });
+
+        // Enter key support for search
+        document.querySelector('input[type="text"]').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                currentPage = 1; // Reset to first page when Enter pressed
+                applyAllFilters();
+            }
+        });
+
+        // Pagination functionality
+        function setupPagination() {
+            // Use event delegation for dynamically created pagination
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.pagination')) {
+                    e.preventDefault();
+
+                    const pageLink = e.target.closest('.page-link');
+                    if (!pageLink) return;
+
+                    const pageItem = pageLink.closest('.page-item');
+                    if (pageItem && pageItem.classList.contains('disabled')) return;
+
+                    if (pageLink.textContent.toLowerCase() === 'previous') {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            applyAllFilters();
+                        }
+                    } else if (pageLink.textContent.toLowerCase() === 'next') {
+                        const visibleCards = getVisibleCards();
+                        const totalPages = Math.ceil(visibleCards.length / itemsPerPage);
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            applyAllFilters();
+                        }
+                    } else {
+                        const pageNumber = parseInt(pageLink.textContent);
+                        if (!isNaN(pageNumber)) {
+                            currentPage = pageNumber;
+                            applyAllFilters();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Get all visible cards after filtering
+        function getVisibleCards() {
+            const allCards = document.querySelectorAll('.col-lg-4.col-md-6');
+            const visibleCards = [];
+            const searchTerm = document.querySelector('input[type="text"]').value.toLowerCase().trim();
+            const activeFilter = document.querySelector('.filter-btn.active').textContent.trim();
+
+            allCards.forEach(card => {
+                let shouldShow = true;
+
+                // Apply age filter
+                const ageElement = card.querySelector('.child-age span');
+                if (ageElement) {
+                    const age = parseInt(ageElement.textContent);
+
+                    switch(activeFilter) {
+                        case 'Age 0-5':
+                            shouldShow = age >= 0 && age <= 5;
+                            break;
+                        case 'Age 6-12':
+                            shouldShow = age >= 6 && age <= 12;
+                            break;
+                        case 'Age 13-18':
+                            shouldShow = age >= 13 && age <= 18;
+                            break;
+                        case 'All':
+                            shouldShow = true;
+                            break;
+                        case 'Recently Missing':
+                            shouldShow = true;
+                            break;
+                        case 'Long Term':
+                            shouldShow = true;
+                            break;
+                    }
+                }
+
+                // Apply search filter
+                if (shouldShow && searchTerm !== '') {
+                    const cardText = card.textContent.toLowerCase();
+                    shouldShow = cardText.includes(searchTerm);
+                }
+
+                if (shouldShow) {
+                    visibleCards.push(card);
+                }
+            });
+
+            return visibleCards;
+        }
+
+        // Get cards for current page
+        function getCurrentPageCards(visibleCards) {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            return visibleCards.slice(startIndex, endIndex);
+        }
+
+        // Update pagination controls
+        function updatePagination(visibleCards) {
+            const paginationContainer = document.querySelector('.pagination');
+            const totalPages = Math.ceil(visibleCards.length / itemsPerPage);
+
+            if (!paginationContainer) return;
+
+            // Clear existing pagination
+            paginationContainer.innerHTML = '';
+
+            // Don't show pagination if only one page or no results
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+
+            // Previous button
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" tabindex="${currentPage === 1 ? '-1' : '0'}">Previous</a>`;
+            paginationContainer.appendChild(prevItem);
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            // Adjust if we're near the end
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // First page and ellipsis if needed
+            if (startPage > 1) {
+                const firstItem = document.createElement('li');
+                firstItem.className = 'page-item';
+                firstItem.innerHTML = `<a class="page-link" href="#">1</a>`;
+                paginationContainer.appendChild(firstItem);
+
+                if (startPage > 2) {
+                    const ellipsisItem = document.createElement('li');
+                    ellipsisItem.className = 'page-item disabled';
+                    ellipsisItem.innerHTML = `<span class="page-link">...</span>`;
+                    paginationContainer.appendChild(ellipsisItem);
+                }
+            }
+
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                paginationContainer.appendChild(pageItem);
+            }
+
+            // Last page and ellipsis if needed
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsisItem = document.createElement('li');
+                    ellipsisItem.className = 'page-item disabled';
+                    ellipsisItem.innerHTML = `<span class="page-link">...</span>`;
+                    paginationContainer.appendChild(ellipsisItem);
+                }
+
+                const lastItem = document.createElement('li');
+                lastItem.className = 'page-item';
+                lastItem.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+                paginationContainer.appendChild(lastItem);
+            }
+
+            // Next button
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" tabindex="${currentPage === totalPages ? '-1' : '0'}">Next</a>`;
+            paginationContainer.appendChild(nextItem);
+        }
+
+        // Update results text with better phrasing
+        function updateResultsText(visibleCards) {
+            const resultsCountElement = document.querySelector('.col-md-6 h3');
+            if (!resultsCountElement) return;
+
+            const totalCount = visibleCards.length;
+
+            if (totalCount === 0) {
+                resultsCountElement.innerHTML = `Currently Missing: <span class="text-primary">0</span>`;
+                return;
+            }
+
+            
+
+           
+        }
+
+        // Main function to apply all filters and pagination
+        function applyAllFilters() {
+            const visibleCards = getVisibleCards();
+            const totalPages = Math.ceil(visibleCards.length / itemsPerPage);
+
+            // Ensure current page is valid
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            } else if (totalPages === 0) {
+                currentPage = 1;
+            }
+
+            const allCards = document.querySelectorAll('.col-lg-4.col-md-6');
+
+            // Hide all cards first
+            allCards.forEach(card => {
+                card.style.display = 'none';
+                card.classList.remove('animate__fadeInUp');
+            });
+
+            // Show only cards for current page
+            const currentPageCards = getCurrentPageCards(visibleCards);
+            currentPageCards.forEach((card, index) => {
+                card.style.display = 'block';
+                card.classList.add('animate__fadeInUp');
+                // Add delay for staggered animation
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Update pagination (always call this to ensure it shows/hides properly)
+            updatePagination(visibleCards);
+
+            // Update results visibility and count
+            const childrenContainer = document.getElementById('childrenContainer');
+            const noResults = document.getElementById('noResults');
+
+            if (visibleCards.length === 0) {
+                childrenContainer.style.display = 'none';
+                noResults.style.display = 'block';
+
+                const noResultsTitle = noResults.querySelector('h3');
+                const noResultsText = noResults.querySelector('p');
+                const searchTerm = document.querySelector('input[type="text"]').value.toLowerCase().trim();
+
+                if (searchTerm !== '') {
+                    noResultsTitle.textContent = 'No Search Results Found';
+                    noResultsText.textContent = `We couldn't find any matches for "${searchTerm}". Please try different search terms or filters.`;
+                } else {
+                    noResultsTitle.textContent = 'No Results Found';
+                    noResultsText.textContent = 'We couldn\'t find any matches for your filter criteria. Please try different filters.';
+                }
+            } else {
+                childrenContainer.style.display = 'flex';
+                noResults.style.display = 'none';
+            }
+
+            // Update results text with improved phrasing
+            updateResultsText(visibleCards);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPagination();
+            applyAllFilters();
+        });
+    </script>
+   
+    
+}

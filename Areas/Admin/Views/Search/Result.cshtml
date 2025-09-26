@@ -1,0 +1,215 @@
+﻿@model VmUserSearchResult
+
+@section Styles{
+    <style>
+        :root {
+        --primary-color: #b66dff;
+        --secondary-color: #3f37c9;
+        --accent-color: #4cc9f0;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --danger-color: #ef233c;
+        }
+
+        body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f5f7ff;
+        color: #444;
+        }
+
+        .navbar {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+        background: linear-gradient(#b66dff, #3f37c9), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 5rem 0;
+        margin-bottom: 3rem;
+        }
+
+        .search-container {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 2rem;
+        margin-top: -50px;
+        position: relative;
+        z-index: 10;
+        }
+
+        .filter-btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        }
+
+        .child-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        }
+
+        .child-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .child-img {
+        height: 250px;
+        object-fit: cover;
+        width: 100%;
+        }
+
+        .missing-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: forestgreen;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        }
+
+        .child-age {
+        font-weight: 600;
+        color: var(--primary-color);
+        }
+
+        .last-seen {
+        font-size: 0.875rem;
+        color: #6c757d;
+        }
+
+        .view-btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        }
+
+        
+        
+
+        
+
+        .floating {
+        animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0%{
+            transform: translateY(0px);
+            }
+
+            50% {
+            transform: translateY(-10px);
+            }
+
+            100% {
+            transform: translateY(0px);
+            }
+
+        }
+
+    </style>
+}  
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Result Search</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Similar Children</p>
+        
+    </div>
+</section>
+
+<!-- Lost Children Gallery -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3 class="fw-bold">Currently Missing: <span class="text-primary">@Model.lstSearchResultChildren.Count</span></h3>
+            </div>
+            
+        </div>
+
+        <div class="row g-4" id="childrenContainer">
+            @if (Model.lstSearchResultChildren.Count > 0 && Model.lstSearchResultChildren != null)
+            {
+                @for (int i = 0; i < Model.lstSearchResultChildren.Count; i++)
+                {
+                    <!-- Child Card  -->
+                    <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp">
+                        <div class="child-card">
+                            <div class="position-relative">
+                                <img src="@Model.lstSearchResultChildren[i].Child.FoundChildImage"
+                                     class="child-img" alt="Missing child">
+                                <div class="missing-badge">Existed</div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.lstSearchResultChildren[i].Child.FoundChildName</h5>
+                                <p class="card-text">
+                                    <span class="child-age">@Model.lstSearchResultChildren[i].Child.EstimatedAge years old</span>
+                                </p>
+                                @if (Model.lstSearchResultChildren[i].Child.FoundDate != null && Model.lstSearchResultChildren[i].Child.FoundLocation != "")
+                                {
+                                    <p class="last-seen">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Found on @Model.lstSearchResultChildren[i].Child.FoundLocation, in @(Model.lstSearchResultChildren[i].Child.FoundDate.ToString("D") ?? "")
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-area="Admin" asp-controller="Search" asp-action="ChildDetails" asp-route-id="@Model.lstSearchResultChildren[i].Child.FoundChildId" class="view-btn btn btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="row justify-content-center mt-5">
+                <div class="col-lg-8 text-center">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body p-5">
+                            <h2 class="mb-4">Do You Want Save this Result ?</h2>
+
+                            <div class="d-flex justify-content-center gap-3">
+                                <a asp-area="Admin" asp-controller="Search" asp-action="Save" class="btn btn-light btn-lg px-4">Save Result</a>
+                                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-lg px-4">Cansel</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
+

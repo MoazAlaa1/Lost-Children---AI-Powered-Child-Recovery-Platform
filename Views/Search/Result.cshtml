@@ -1,0 +1,282 @@
+﻿@model VmUserSearchResult
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --danger-color: #ef233c;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7ff;
+            color: #444;
+        }
+
+        .navbar {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .search-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .filter-btn {
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .filter-btn.active {
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+            }
+
+        .child-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+            .child-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            }
+
+        .child-img {
+            height: 250px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .missing-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .child-age {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .last-seen {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .view-btn {
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .view-btn:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+            }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: var(--primary-color);
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #343a40);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 5rem;
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Search Result</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Most Similar Children</p>
+        
+    </div>
+</section>
+
+
+<!-- Lost Children Gallery -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3 class="fw-bold">Top <span class="text-primary">@Model.lstSearchResultChildren.Count</span> Children in Similarity </h3>
+            </div>
+            
+        </div>
+
+        <div class="row g-4" id="childrenContainer">
+            @if (Model.lstSearchResultChildren.Count > 0 && Model != null)
+            {
+                @for (int i = 0; i < Model.lstSearchResultChildren.Count; i++)
+                {
+                    <!-- Child Card  -->
+                    <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp">
+                        <div class="child-card">
+                            <div class="position-relative">
+                                <img src="@Model.lstSearchResultChildren[i].Child.FoundChildImage"
+                                     class="child-img" alt="Missing child">
+                                <div class="missing-badge">Existed</div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.lstSearchResultChildren[i].Child.FoundChildName</h5>
+                                <p class="card-text">
+                                    <span class="child-age">@Model.lstSearchResultChildren[i].Child.EstimatedAge years old</span>
+                                </p>
+                                @if (Model.lstSearchResultChildren[i].Child.FoundDate != null && Model.lstSearchResultChildren[i].Child.FoundLocation != "")
+                                {
+                                    <p class="last-seen">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Found in @Model.lstSearchResultChildren[i].Child.FoundLocation, on @(Model.lstSearchResultChildren[i].Child.FoundDate.ToString("D") ?? "")
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-controller="Search" asp-action="ChildDetails" asp-route-id="@Model.lstSearchResultChildren[i].Child.FoundChildId" class="view-btn btn btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+
+        </div>
+
+        
+    </div>
+</section>
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-8 text-center">
+        <div class="card bg-primary text-white">
+            <div class="card-body p-5">
+                <h2 class="mb-4">Do You Want To Save This Result?</h2>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Search" asp-action="FinalResult"  class="btn btn-light btn-lg px-4">Save Search Result</a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-lg px-4">Cansel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // Filter buttons functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // In a real app, this would filter the results
+                // For demo, we'll simulate no results for some filters
+                if (this.textContent.trim() === 'Age 13-18') {
+                    document.getElementById('childrenContainer').style.display = 'none';
+                    document.getElementById('noResults').style.display = 'block';
+                } else {
+                    document.getElementById('childrenContainer').style.display = 'flex';
+                    document.getElementById('noResults').style.display = 'none';
+                }
+            });
+        });
+
+        // Reset filters button
+        document.getElementById('resetFiltersBtn').addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.filter-btn').classList.add('active');
+            document.getElementById('childrenContainer').style.display = 'flex';
+            document.getElementById('noResults').style.display = 'none';
+        });
+
+        // Search functionality
+        document.querySelector('input[type="text"]').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const children = document.querySelectorAll('.child-card');
+            let hasResults = false;
+
+            children.forEach(child => {
+                const text = child.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    child.parentElement.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    child.parentElement.style.display = 'none';
+                }
+            });
+
+            if (!hasResults && searchTerm.length > 0) {
+                document.getElementById('childrenContainer').style.display = 'none';
+                document.getElementById('noResults').style.display = 'block';
+            } else {
+                document.getElementById('childrenContainer').style.display = 'flex';
+                document.getElementById('noResults').style.display = 'none';
+            }
+        });
+    </script>
+}

@@ -1,0 +1,261 @@
+﻿@model Users
+@section Styles{
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7ff;
+            color: #444;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .register-hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .register-container {
+            max-width: 600px;
+            margin: -50px auto 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .register-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .register-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--success-color), #3a9e3a);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .register-form .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+            .register-form .form-control:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.25);
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--success-color), #3a9e3a);
+            border: none;
+            padding: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(75, 181, 67, 0.4);
+            }
+
+        .password-strength {
+            height: 5px;
+            background-color: #eee;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #dc3545;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .password-requirements {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+            .requirement i {
+                margin-right: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .requirement.valid {
+                color: var(--success-color);
+            }
+
+                .requirement.valid i {
+                    color: var(--success-color);
+                }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #343a40);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0%{
+             transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+
+        }
+    </style>
+}
+<!-- Hero Section -->
+<section class="register-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Join ChildConnect</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Create an account to help reunite families</p>
+        <div class="animate__animated animate__fadeInUp animate__delay-1s">
+            <a asp-controller="User" asp-action="LoginForm" asp-route-returnUrl="@Model.ReturnUrl"  class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-sign-in-alt me-2"></i>Already have an account?
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Register Form -->
+<div class="container register-container">
+    <div class="register-card animate__animated animate__fadeInUp">
+        <div class="card-header">
+            <h2 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create Account</h2>
+        </div>
+        <div class="card-body p-4">
+            <form class="register-form" method="post" enctype="multipart/form-data" role="form"
+                  asp-controller="User" asp-action="Register">
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div class="row g-3">
+                    <!-- First Name -->
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required asp-for="FirstName">
+                        <span class="text-danger" asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required asp-for="LastName">
+                        <span class="text-danger" asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3 mt-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required asp-for="Email">
+                    <span class="text-danger" asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Create a password" required asp-for="Password">
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                    <div class="password-requirements">
+                        <div class="requirement" id="lengthReq">
+                            <i class="fas fa-circle"></i> At least 8 characters
+                        </div>
+                        <div class="requirement" id="UpperReq">
+                            <i class="fas fa-circle"></i> Use UpperCase character
+                        </div>
+                        <div class="requirement" id="numberReq">
+                            <i class="fas fa-circle"></i> Contains a number
+                        </div>
+                        <div class="requirement" id="specialReq">
+                            <i class="fas fa-circle"></i> Contains a special character
+                        </div>
+                    </div>
+                    <span class="text-danger" asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-4">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                    <div class="invalid-feedback" id="passwordMatchFeedback">
+                        Passwords do not match
+                    </div>
+                </div>
+
+
+                <!-- Submit Button -->
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-register" >
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+                </div>
+
+                <!-- Login Link -->
+                <div class="text-center">
+                    <p class="mb-0">Already have an account? <a asp-controller="User" asp-action="LoginForm" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary">Login here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/RegisterValidation.js"></script>
+}

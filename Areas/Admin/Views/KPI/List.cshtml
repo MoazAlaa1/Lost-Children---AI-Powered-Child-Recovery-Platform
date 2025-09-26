@@ -1,0 +1,68 @@
+﻿@model List<KPI>
+
+@section Styles {
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="~/Admin/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+}
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title"> KPI </h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                
+                <li class="breadcrumb-item active" aria-current="page">Data table</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Data table</h4>
+            <a class="btn btn-success btn-fw" asp-controller="KPI" asp-action="Edit" asp-area="Admin">Add New</a>         
+            <div class="row">
+                <div class="col-12">
+                    <div id="order-listing_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="order-listing" class="table dataTable no-footer" aria-describedby="order-listing_info">
+                                    <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 35%;">Label</th>
+                                            <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 35%;">Value</th>
+                                            <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 30%;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Count() ; i++)
+                                        {
+
+                                            <tr class="odd">
+                                                <td>@Model[i].Label</td>
+                                                <td>@Model[i].Value</td>
+                                                <td>
+                                                    <a class="btn btn-info btn-fw" asp-controller="KPI" asp-action="Edit" asp-area="Admin" asp-route-id="@Model[i].KpiId">Edit</a>
+                                                    <a class="btn btn-danger btn-fw" asp-controller="KPI" asp-action="Delete" asp-area="Admin" asp-route-id="@Model[i].KpiId">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- Plugin js for this page -->
+    <script src="~/Admin/assets/vendors/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/Admin/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- Custom js for this page -->
+    <script src="~/Admin/assets/js/data-table.js"></script>
+    <!-- End custom js for this page -->
+    
+}

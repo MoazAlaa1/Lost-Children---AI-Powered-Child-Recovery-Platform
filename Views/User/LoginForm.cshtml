@@ -1,0 +1,250 @@
+﻿@model Users
+@section Styles{
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7ff;
+            color: #444;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .login-hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.9)), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .login-container {
+            max-width: 500px;
+            margin: -50px auto 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .login-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .login-form .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+            .login-form .form-control:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.25);
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+            }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #777;
+        }
+
+            .divider::before, .divider::after {
+                content: "";
+                flex: 1;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .divider::before {
+                margin-right: 1rem;
+            }
+
+            .divider::after {
+                margin-left: 1rem;
+            }
+
+        .social-login .btn {
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-google {
+            background-color: white;
+            color: #db4437;
+            border: 1px solid #ddd;
+        }
+
+            .btn-google:hover {
+                background-color: #f8f9fa;
+            }
+
+        .btn-facebook {
+            background-color: #1877f2;
+            color: white;
+        }
+
+            .btn-facebook:hover {
+                background-color: #166fe5;
+            }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #343a40);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @@keyframes floating {
+            0%{
+            transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="login-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Welcome Back</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Sign in to access your LostChildren account</p>
+        <div class="animate__animated animate__fadeInUp animate__delay-1s">
+            <a asp-controller="User" asp-action="RegisterForm" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-user-plus me-2"></i>Create Account
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Login Form -->
+<div class="container login-container">
+    <div class="login-card animate__animated animate__fadeInUp">
+        <div class="card-header">
+            <h2 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>Account Login</h2>
+        </div>
+        <div class="card-body p-4">
+            <form class="login-form" method="post" enctype="multipart/form-data" role="form"
+                    asp-controller="User" asp-action="Login">
+                <input type="hidden" asp-for="ReturnUrl" />
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required asp-for="Email">
+                    <span class="text-danger" asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required asp-for="Password">
+                    <span class="text-danger" asp-validation-for="Password" class="text-danger"></span>
+                    <div class="forgot-password">
+                        <a href="forgot-password.html" class="text-primary">Forgot password?</a>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </div>
+
+                <!-- Register Link -->
+                <div class="text-center">
+                    <p class="mb-0">Don't have an account? <a asp-controller="User" asp-action="RegisterForm" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary">Register here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        
+
+        // Social login buttons
+        document.querySelector('.btn-google').addEventListener('click', function() {
+            alert('Google login would be implemented here');
+        });
+
+        document.querySelector('.btn-facebook').addEventListener('click', function() {
+            alert('Facebook login would be implemented here');
+        });
+    </script>
+}

@@ -1,0 +1,202 @@
+﻿@model List<FoundChild>
+@section Styles{
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="~/Admin/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+    <style>
+        /* Responsive table container */
+        .card-body {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+            padding: 15px;
+        }
+
+        /* Table styling */
+        #order-listing {
+            width: 100%;
+            min-width: 800px; /* Minimum width to prevent squeezing */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+            /* Table cell styling */
+            #order-listing td, #order-listing th {
+                padding: 12px 15px;
+                vertical-align: middle;
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 992px) {
+            .card-body {
+                padding: 10px;
+            }
+
+            #order-listing td, #order-listing th {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            /* Reduce padding further on small screens */
+            #order-listing td, #order-listing th {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+            /* Make buttons smaller */
+            .btn-outline-primary {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            /* Adjust badge sizes */
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.25em 0.4em;
+            }
+        }
+    </style>
+    <style>
+            @@media (max-width: 576px) {
+            /* Transform table into cards */
+            #order-listing, #order-listing thead, #order-listing tbody, #order-listing th, #order-listing td, #order-listing tr
+
+        {
+            display: block;
+            width: 100%;
+            white-space: normal;
+        }
+
+        #order-listing thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        #order-listing tr {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #order-listing td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+            text-align: left;
+        }
+
+            #order-listing td:before {
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                content: attr(data-label);
+                font-weight: bold;
+            }
+
+        /* Remove min-width when in card mode */
+        #order-listing {
+            min-width: auto;
+        }
+
+            /* Hide some columns in card view if needed */
+            #order-listing td:nth-child(4),
+            #order-listing td:nth-child(5) {
+                display: none;
+            }
+
+        }
+    </style>
+    <style>
+        #order-listing td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+            #order-listing td:nth-child(2) {
+                max-width: 150px;
+            }
+
+            #order-listing td img {
+                width: 160px;
+                height: 100px;
+                object-fit: contain;
+                border-radius: 0;
+            }
+
+    </style>
+ }
+
+        <div class="content-wrapper">
+        
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Data table</h4>
+            <a class="btn btn-success btn-fw" asp-controller="FoundedChildren" asp-action="Edit" asp-area="Admin">Add Found Child</a>
+            <div class="row">
+                <div class="col-12">
+                <table id="order-listing" class="table">
+                    <thead>
+                    <tr>
+                        <th>Child Photo</th>
+                        <th>Child Name</th>
+                        <th>Estimated Age</th>
+                        <th>Gender</th>
+                        <th>Current Condition</th>
+                        <th>Date Found</th>
+                        <th>Current Location</th>
+                        <th>Actions</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    @if(Model.Count > 0 || Model!=null)
+                    {
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                     <img src="@Model[i].FoundChildImage" alt="Alternate Text" />
+                                </td>
+                                <td>@Model[i].FoundChildName</td>
+                                <td>@Model[i].EstimatedAge</td>
+                                <td>@Model[i].Gender</td>
+                                <td>@Model[i].CurrentCondition</td>
+                                <td>@Model[i].FoundDate.ToString("yyyy-MM-dd")</td>
+                                <td>@Model[i].CurrentLocation</td>
+
+                                <td>
+                                    <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="FoundedChildren" asp-action="Edit" asp-route-id="@Model[i].FoundChildId">View/Edit</a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="FoundedChildren" asp-action="Delete" asp-route-id="@Model[i].FoundChildId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                       
+                       
+
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        <!-- content-wrapper ends -->
+
+@section Scripts{
+        <!-- Plugin js for this page -->
+        <script src="~/Admin/assets/vendors/datatables.net/jquery.dataTables.js"></script>
+        <script src="~/Admin/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+        <!-- End plugin js for this page -->
+       
+        <!-- Custom js for this page -->
+        <script src="~/Admin/assets/js/data-table.js"></script>
+        <!-- End custom js for this page -->
+       
+}

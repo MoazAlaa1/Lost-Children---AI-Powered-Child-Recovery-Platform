@@ -1,0 +1,51 @@
+﻿@model KPI
+@section Styles
+{
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="~/Admin/assets/vendors/quill/quill.snow.css">
+    <link rel="stylesheet" href="~/Admin/assets/vendors/simplemde/simplemde.min.css">
+    <!-- End plugin css for this page -->
+}
+<div class="content-wrapper">
+    <form class="forms-sample" method="post" enctype="multipart/form-data"
+          asp-area="Admin" asp-controller="KPI" asp-action="Save" role="form">
+        <div class="row" style="padding: 50px;">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body row">
+                        <h4 class="card-title">KPI</h4>
+                        <p class="card-description"> New or Edit </p>
+                        <input type="hidden" asp-for="KpiId" />
+                        <input type="hidden" asp-for="CreatedBy" />
+                        <input type="hidden" asp-for="UpdatedBy" />
+                        <input type="hidden" asp-for="UpdatedDate" />
+                        <div class="form-group col-md-6">
+                            <label>KPI Label</label>
+                            <input type="text" class="form-control" placeholder="Label" asp-for="Label" required maxlength="100">
+                            <span class="text-danger" asp-validation-for="Label" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Value</label>
+                            <input type="text" class="form-control" asp-for="Value" placeholder="Value" required />
+                            <span class="text-danger" asp-validation-for="Value"></span>
+                        </div>
+
+
+                        <div>
+                            <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                            <a class="btn btn-light" asp-controller="KPI" asp-action="List" asp-area="Admin">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Admin/assets/vendors/tinymce/tinymce.min.js"></script>
+
+}
